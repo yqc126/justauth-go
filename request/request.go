@@ -22,7 +22,7 @@ type AuthRequest interface {
 	 * @param state state 验证授权流程的参数，可以防止csrf
 	 * @return 返回授权地址
 	 */
-	authorize(state string) string
+	Authorize(state string) string
 
 	/**
 	 * 第三方登录
@@ -30,7 +30,7 @@ type AuthRequest interface {
 	 * @param authCallback 用于接收回调参数的实体
 	 * @return 返回登录成功后的用户信息
 	 */
-	login(authCallback model.AuthCallback) model.AuthResponse
+	Login(authCallback model.AuthCallback) (model.AuthResponse, error)
 
 	/**
 	 * 撤销授权
@@ -38,7 +38,7 @@ type AuthRequest interface {
 	 * @param authToken 登录成功后返回的Token信息
 	 * @return AuthResponse
 	 */
-	revoke(authToken model.AuthToken) model.AuthResponse
+	Revoke(authToken model.AuthToken) (model.AuthResponse, error)
 
 	/**
 	 * 刷新access token （续期）
@@ -46,5 +46,5 @@ type AuthRequest interface {
 	 * @param authToken 登录成功后返回的Token信息
 	 * @return AuthResponse
 	 */
-	refresh(authToken model.AuthToken) model.AuthResponse
+	Refresh(authToken model.AuthToken) (model.AuthResponse, error)
 }

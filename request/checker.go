@@ -21,7 +21,7 @@ type AuthChecker struct{}
  * @return true or false
  * @since 1.6.1-beta
  */
-func (c AuthChecker) IsSupportedAuth(config cfg.AuthConfig, source cfg.AuthSource) bool {
+func (c *AuthChecker) IsSupportedAuth(config cfg.AuthConfig, source cfg.AuthSource) bool {
 	return true
 }
 
@@ -32,7 +32,7 @@ func (c AuthChecker) IsSupportedAuth(config cfg.AuthConfig, source cfg.AuthSourc
  * @param source source
  * @since 1.6.1-beta
  */
-func (c AuthChecker) CheckConfig(config cfg.AuthConfig, source cfg.AuthSource) error {
+func (c *AuthChecker) CheckConfig(config cfg.AuthConfig, source cfg.AuthSource) error {
 	return nil
 }
 
@@ -45,7 +45,7 @@ func (c AuthChecker) CheckConfig(config cfg.AuthConfig, source cfg.AuthSource) e
  * @param callback 从第三方授权回调回来时传入的参数集合
  * @since 1.8.0
  */
-func (c AuthChecker) CheckCode(source cfg.AuthSource, callback model.AuthCallback) error {
+func (c *AuthChecker) CheckCode(source cfg.AuthSource, callback model.AuthCallback) error {
 	return nil
 }
 
@@ -60,6 +60,6 @@ func (c AuthChecker) CheckCode(source cfg.AuthSource, callback model.AuthCallbac
  * @param source         {@code source}当前授权平台
  * @param authStateCache {@code authStateCache} state缓存实现
  */
-func (c AuthChecker) CheckState(state string, source cfg.AuthSource, authStateCache struct{}) error {
+func (c *AuthChecker) CheckState(state string, source cfg.AuthSource, authStateCache struct{}) error {
 	return nil
 }

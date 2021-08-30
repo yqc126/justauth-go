@@ -2,7 +2,7 @@ package model
 
 import (
 	"encoding/json"
-	"github.com/justauth/justauth-go/enums"
+	"github.com/justauth/justauth-go/enum"
 )
 
 /**
@@ -54,7 +54,7 @@ type AuthUser struct {
 	/**
 	 * 性别
 	 */
-	gender enums.AuthUserGender
+	gender enum.AuthUserGender
 	/**
 	 * 用户来源
 	 */

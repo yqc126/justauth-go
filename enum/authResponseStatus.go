@@ -1,4 +1,4 @@
-package enums
+package enum
 
 type AuthResponseStatus struct {
 	Code int

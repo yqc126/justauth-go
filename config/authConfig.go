@@ -11,23 +11,23 @@ type AuthConfig struct {
 	/**
 	 * 客户端id：对应各平台的appKey
 	 */
-	clientId string
+	ClientId string
 
 	/**
 	 * 客户端Secret：对应各平台的appSecret
 	 */
-	clientSecret string
+	ClientSecret string
 
 	/**
 	 * 登录成功后的回调地址
 	 */
-	redirectUri string
+	RedirectUri string
 
 	/**
 	 * 支付宝公钥：当选择支付宝登录时，该值可用
 	 * 对应“RSA2(SHA256)密钥”中的“支付宝公钥”
 	 */
-	alipayPublicKey string
+	AlipayPublicKey string
 
 	/**
 	 * 是否需要申请unionid，目前只针对qq登录
@@ -36,7 +36,7 @@ type AuthConfig struct {
 	 * <p>
 	 * 1.7.1版本新增参数
 	 */
-	unionId bool
+	UnionId bool
 
 	/**
 	 * Stack Overflow Key
@@ -44,21 +44,21 @@ type AuthConfig struct {
 	 *
 	 * @since 1.9.0
 	 */
-	stackOverflowKey string
+	StackOverflowKey string
 
 	/**
 	 * 企业微信，授权方的网页应用ID
 	 *
 	 * @since 1.10.0
 	 */
-	agentId string
+	AgentId string
 
 	/**
 	 * 企业微信第三方授权用户类型，member|admin
 	 *
 	 * @since 1.10.0
 	 */
-	usertype string
+	Usertype string
 
 	/**
 	 * 域名前缀。
@@ -71,7 +71,7 @@ type AuthConfig struct {
 	 *
 	 * @since 1.16.0
 	 */
-	domainPrefix string
+	DomainPrefix string
 
 	/**
 	 * 针对国外服务可以单独设置代理
@@ -81,7 +81,7 @@ type AuthConfig struct {
 	 *
 	 * @since 1.15.5
 	 */
-	httpConfig string
+	HttpConfig string
 
 	/**
 	 * 忽略校验 {@code state} 参数，默认不开启。当 {@code ignoreCheckState} 为 {@code true} 时，
@@ -101,42 +101,42 @@ type AuthConfig struct {
 	 * @see <a href="https://github.com/justauth/JustAuth/issues/83">https://github.com/justauth/JustAuth/issues/83</a>
 	 * @since 1.15.6
 	 */
-	ignoreCheckState string
+	IgnoreCheckState string
 
 	/**
 	 * 支持自定义授权平台的 scope 内容
 	 *
 	 * @since 1.15.7
 	 */
-	scopes []string
+	Scopes []string
 
 	/**
 	 * 设备ID, 设备唯一标识ID
 	 *
 	 * @since 1.15.8
 	 */
-	deviceId string
+	DeviceId string
 
 	/**
 	 * 喜马拉雅：客户端操作系统类型，1-iOS系统，2-Android系统，3-Web
 	 *
 	 * @since 1.15.9
 	 */
-	clientOsType int
+	ClientOsType int
 
 	/**
 	 * 喜马拉雅：客户端包名，如果 {@link AuthConfig#clientOsType} 为1或2时必填。对Android客户端是包名，对IOS客户端是Bundle ID
 	 *
 	 * @since 1.15.9
 	 */
-	packId string
+	PackId string
 
 	/**
 	 * 是否开启 PKCE 模式，该配置仅用于支持 PKCE 模式的平台，针对无服务应用，不推荐使用隐式授权，推荐使用 PKCE 模式
 	 *
 	 * @since 1.15.9
 	 */
-	pkce bool
+	Pkce bool
 
 	/**
 	 * Okta 授权服务器的 ID， 默认为 default。如果要使用自定义授权服务，此处传实际的授权服务器 ID（一个随机串）
@@ -149,14 +149,14 @@ type AuthConfig struct {
 	 *
 	 * @since 1.16.0
 	 */
-	authServerId string
+	AuthServerId string
 	/**
 	 * 忽略校验 {@code redirectUri} 参数，默认不开启。当 {@code ignoreCheckRedirectUri} 为 {@code true} 时，
 	 * {@link me.zhyd.oauth.utils.AuthChecker#checkConfig(AuthConfig, AuthSource)} 将不会校验 {@code redirectUri} 的合法性。
 	 *
 	 * @since 1.16.1
 	 */
-	ignoreCheckRedirectUri bool
+	IgnoreCheckRedirectUri bool
 }
 
 /**
@@ -165,9 +165,114 @@ type AuthConfig struct {
  * @return authServerId
  */
 func (c AuthConfig) GetAuthServerId() string {
-	if len(c.authServerId) != 0 {
+	if len(c.AuthServerId) != 0 {
 		return "default"
 	}
 
-	return c.authServerId
+	return c.AuthServerId
+}
+
+// AuthConfig builder pattern code
+type AuthConfigBuilder struct {
+	authConfig *AuthConfig
+}
+
+func NewAuthConfigBuilder() *AuthConfigBuilder {
+	authConfig := &AuthConfig{}
+	b := &AuthConfigBuilder{authConfig: authConfig}
+	return b
+}
+
+func (b *AuthConfigBuilder) ClientId(clientId string) *AuthConfigBuilder {
+	b.authConfig.ClientId = clientId
+	return b
+}
+
+func (b *AuthConfigBuilder) ClientSecret(clientSecret string) *AuthConfigBuilder {
+	b.authConfig.ClientSecret = clientSecret
+	return b
+}
+
+func (b *AuthConfigBuilder) RedirectUri(redirectUri string) *AuthConfigBuilder {
+	b.authConfig.RedirectUri = redirectUri
+	return b
+}
+
+func (b *AuthConfigBuilder) AlipayPublicKey(alipayPublicKey string) *AuthConfigBuilder {
+	b.authConfig.AlipayPublicKey = alipayPublicKey
+	return b
+}
+
+func (b *AuthConfigBuilder) UnionId(unionId bool) *AuthConfigBuilder {
+	b.authConfig.UnionId = unionId
+	return b
+}
+
+func (b *AuthConfigBuilder) StackOverflowKey(stackOverflowKey string) *AuthConfigBuilder {
+	b.authConfig.StackOverflowKey = stackOverflowKey
+	return b
+}
+
+func (b *AuthConfigBuilder) AgentId(agentId string) *AuthConfigBuilder {
+	b.authConfig.AgentId = agentId
+	return b
+}
+
+func (b *AuthConfigBuilder) Usertype(usertype string) *AuthConfigBuilder {
+	b.authConfig.Usertype = usertype
+	return b
+}
+
+func (b *AuthConfigBuilder) DomainPrefix(domainPrefix string) *AuthConfigBuilder {
+	b.authConfig.DomainPrefix = domainPrefix
+	return b
+}
+
+func (b *AuthConfigBuilder) HttpConfig(httpConfig string) *AuthConfigBuilder {
+	b.authConfig.HttpConfig = httpConfig
+	return b
+}
+
+func (b *AuthConfigBuilder) IgnoreCheckState(ignoreCheckState string) *AuthConfigBuilder {
+	b.authConfig.IgnoreCheckState = ignoreCheckState
+	return b
+}
+
+func (b *AuthConfigBuilder) Scopes(scopes []string) *AuthConfigBuilder {
+	b.authConfig.Scopes = scopes
+	return b
+}
+
+func (b *AuthConfigBuilder) DeviceId(deviceId string) *AuthConfigBuilder {
+	b.authConfig.DeviceId = deviceId
+	return b
+}
+
+func (b *AuthConfigBuilder) ClientOsType(clientOsType int) *AuthConfigBuilder {
+	b.authConfig.ClientOsType = clientOsType
+	return b
+}
+
+func (b *AuthConfigBuilder) PackId(packId string) *AuthConfigBuilder {
+	b.authConfig.PackId = packId
+	return b
+}
+
+func (b *AuthConfigBuilder) Pkce(pkce bool) *AuthConfigBuilder {
+	b.authConfig.Pkce = pkce
+	return b
+}
+
+func (b *AuthConfigBuilder) AuthServerId(authServerId string) *AuthConfigBuilder {
+	b.authConfig.AuthServerId = authServerId
+	return b
+}
+
+func (b *AuthConfigBuilder) IgnoreCheckRedirectUri(ignoreCheckRedirectUri bool) *AuthConfigBuilder {
+	b.authConfig.IgnoreCheckRedirectUri = ignoreCheckRedirectUri
+	return b
+}
+
+func (b *AuthConfigBuilder) Build() (*AuthConfig, error) {
+	return b.authConfig, nil
 }

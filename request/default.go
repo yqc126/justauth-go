@@ -18,6 +18,26 @@ type AuthDefaultRequest struct {
 }
 
 /**
+ * 撤销授权
+ *
+ * @param authToken 登录成功后返回的Token信息
+ * @return AuthResponse
+ */
+func (r *AuthDefaultRequest) Revoke(authToken model.AuthToken) (model.AuthResponse, error) {
+	panic("implement me")
+}
+
+/**
+ * 刷新access token （续期）
+ *
+ * @param authToken 登录成功后返回的Token信息
+ * @return AuthResponse
+ */
+func (r *AuthDefaultRequest) Refresh(authToken model.AuthToken) (model.AuthResponse, error) {
+	panic("implement me")
+}
+
+/**
  * 获取access token
  *
  * @param authCallback 授权成功后的回调参数
@@ -25,7 +45,7 @@ type AuthDefaultRequest struct {
  * @see AuthDefaultRequest#authorize()
  * @see AuthDefaultRequest#authorize(String)
  */
-func (r AuthDefaultRequest) getAccessToken(authCallback model.AuthCallback) model.AuthToken {
+func (r AuthDefaultRequest) GetAccessToken(authCallback model.AuthCallback) model.AuthToken {
 	return model.AuthToken{}
 }
 
@@ -36,7 +56,7 @@ func (r AuthDefaultRequest) getAccessToken(authCallback model.AuthCallback) mode
  * @return 用户信息
  * @see AuthDefaultRequest#getAccessToken(AuthCallback)
  */
-func (r AuthDefaultRequest) getUserInfo(authToken model.AuthToken) model.AuthUser {
+func (r AuthDefaultRequest) GetUserInfo(authToken model.AuthToken) model.AuthUser {
 	return model.AuthUser{}
 }
 
@@ -47,7 +67,7 @@ func (r AuthDefaultRequest) getUserInfo(authToken model.AuthToken) model.AuthUse
  * @param authCallback 用于接收回调参数的实体
  * @return AuthResponse
  */
-func (r AuthDefaultRequest) login(authCallback model.AuthCallback) (model.AuthResponse, error) {
+func (r AuthDefaultRequest) Login(authCallback model.AuthCallback) (model.AuthResponse, error) {
 	return model.AuthResponse{}, nil
 }
 
@@ -57,7 +77,7 @@ func (r AuthDefaultRequest) login(authCallback model.AuthCallback) (model.AuthRe
  * @param e 具体的异常
  * @return AuthResponse
  */
-func (r AuthDefaultRequest) responseError(err error) model.AuthResponse {
+func (r AuthDefaultRequest) ResponseError(err error) model.AuthResponse {
 	return model.AuthResponse{}
 }
 
@@ -68,7 +88,7 @@ func (r AuthDefaultRequest) responseError(err error) model.AuthResponse {
  * @return 返回授权地址
  * @since 1.9.3
  */
-func (r AuthDefaultRequest) authorize(state string) string {
+func (r AuthDefaultRequest) Authorize(state string) string {
 	return ""
 }
 
@@ -78,7 +98,7 @@ func (r AuthDefaultRequest) authorize(state string) string {
  * @param code 授权码
  * @return 返回获取accessToken的url
  */
-func (r AuthDefaultRequest) accessTokenUrl(code string) string {
+func (r AuthDefaultRequest) AccessTokenUrl(code string) string {
 	return ""
 }
 
@@ -88,7 +108,7 @@ func (r AuthDefaultRequest) accessTokenUrl(code string) string {
  * @param refreshToken refreshToken
  * @return 返回获取accessToken的url
  */
-func (r AuthDefaultRequest) refreshTokenUrl(refreshToken string) string {
+func (r AuthDefaultRequest) RefreshTokenUrl(refreshToken string) string {
 	return ""
 }
 
@@ -98,7 +118,7 @@ func (r AuthDefaultRequest) refreshTokenUrl(refreshToken string) string {
  * @param authToken token
  * @return 返回获取userInfo的url
  */
-func (r AuthDefaultRequest) userInfoUrl(authToken model.AuthToken) string {
+func (r AuthDefaultRequest) UserInfoUrl(authToken model.AuthToken) string {
 	return ""
 }
 
@@ -108,7 +128,7 @@ func (r AuthDefaultRequest) userInfoUrl(authToken model.AuthToken) string {
  * @param authToken token
  * @return 返回获取revoke authorization的url
  */
-func (r AuthDefaultRequest) revokeUrl(authToken model.AuthToken) string {
+func (r AuthDefaultRequest) RevokeUrl(authToken model.AuthToken) string {
 	return ""
 }
 
@@ -118,7 +138,7 @@ func (r AuthDefaultRequest) revokeUrl(authToken model.AuthToken) string {
  * @param state 原始的state
  * @return 返回不为null的state
  */
-func (r AuthDefaultRequest) getRealState(state string) string {
+func (r AuthDefaultRequest) GetRealState(state string) string {
 	return ""
 }
 
@@ -128,7 +148,7 @@ func (r AuthDefaultRequest) getRealState(state string) string {
  * @param code code码
  * @return Response
  */
-func (r AuthDefaultRequest) doPostAuthorizationCode(code string) string {
+func (r AuthDefaultRequest) DoPostAuthorizationCode(code string) string {
 	return ""
 }
 
@@ -138,7 +158,7 @@ func (r AuthDefaultRequest) doPostAuthorizationCode(code string) string {
  * @param code code码
  * @return Response
  */
-func (r AuthDefaultRequest) doGetAuthorizationCode(code string) string {
+func (r AuthDefaultRequest) DoGetAuthorizationCode(code string) string {
 	return ""
 }
 
@@ -148,7 +168,7 @@ func (r AuthDefaultRequest) doGetAuthorizationCode(code string) string {
  * @param authToken token封装
  * @return Response
  */
-func (r AuthDefaultRequest) doPostUserInfo(authToken model.AuthToken) string {
+func (r AuthDefaultRequest) DoPostUserInfo(authToken model.AuthToken) string {
 	return ""
 }
 
@@ -158,7 +178,7 @@ func (r AuthDefaultRequest) doPostUserInfo(authToken model.AuthToken) string {
  * @param authToken token封装
  * @return Response
  */
-func (r AuthDefaultRequest) doGetUserInfo(authToken model.AuthToken) string {
+func (r AuthDefaultRequest) DoGetUserInfo(authToken model.AuthToken) string {
 	return ""
 }
 
@@ -168,7 +188,7 @@ func (r AuthDefaultRequest) doGetUserInfo(authToken model.AuthToken) string {
  * @param authToken token封装
  * @return Response
  */
-func (r AuthDefaultRequest) doGetRevoke(authToken model.AuthToken) string {
+func (r AuthDefaultRequest) DoGetRevoke(authToken model.AuthToken) string {
 	return ""
 }
 
@@ -181,6 +201,6 @@ func (r AuthDefaultRequest) doGetRevoke(authToken model.AuthToken) string {
  * @return String
  * @since 1.16.7
  */
-func (r AuthDefaultRequest) getScopes(separator string, encode bool, defaultScopes []string) string {
+func (r AuthDefaultRequest) GetScopes(separator string, encode bool, defaultScopes []string) string {
 	return ""
 }

@@ -1,6 +1,6 @@
 package model
 
-import "github.com/justauth/justauth-go/enums"
+import "github.com/justauth/justauth-go/enum"
 
 /**
  * JustAuth统一授权响应类
@@ -32,5 +32,5 @@ type AuthResponse struct {
  * @return true or false
  */
 func (r AuthResponse) Ok() bool {
-	return r.Code == enums.SUCCESS.Code
+	return r.Code == enum.SUCCESS.Code
 }
