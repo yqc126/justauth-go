@@ -1,5 +1,6 @@
 package model
 
+//AuthCallback
 /**
  * 授权回调时的参数类
  *
