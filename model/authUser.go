@@ -5,12 +5,14 @@ import (
 	"github.com/justauth/justauth-go/enum"
 )
 
+//AuthUser
 /**
  * 授权成功后的用户信息，根据授权平台的不同，获取的数据完整性也不同
  *
  * @author yadong.zhang (yadong.zhang0415(a)gmail.com)
  * @since 1.8
  */
+
 type AuthUser struct {
 
 	/**
