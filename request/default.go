@@ -183,7 +183,10 @@ func (r AuthDefaultRequest) RefreshTokenUrl(refreshToken string) string {
  * @return 返回获取userInfo的url
  */
 func (r AuthDefaultRequest) UserInfoUrl(authToken model.AuthToken) string {
-	return ""
+	v := url.Values{}
+	v.Add("access_token", authToken.AccessToken)
+	accessTokenUrl, _ := utils.BuildUrl(r.source.UserInfo(), v)
+	return accessTokenUrl
 }
 
 //RevokeUrl
@@ -252,9 +255,12 @@ func (r AuthDefaultRequest) DoPostUserInfo(authToken model.AuthToken) string {
  * @param authToken token封装
  * @return Response
  */
-func (r AuthDefaultRequest) DoGetUserInfo(authToken model.AuthToken) string {
-
-	return ""
+func (r AuthDefaultRequest) DoGetUserInfo(authToken model.AuthToken) model.AuthUser {
+	resp, _ := http.Get(r.UserInfoUrl(authToken))
+	body, _ := ioutil.ReadAll(resp.Body)
+	token := model.AuthUser{}
+	_ = json.Unmarshal(body, &token)
+	return token
 }
 
 //DoGetRevoke
