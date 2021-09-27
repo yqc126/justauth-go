@@ -20,55 +20,55 @@ type AuthUser struct {
 	 *
 	 * @since 1.3.3
 	 */
-	uuid string
+	UUID string `json:"uuid"`
 	/**
 	 * 用户名
 	 */
-	username string
+	Username string `json:"username"`
 	/**
 	 * 用户昵称
 	 */
-	nickname string
+	Nickname string `json:"nickname"`
 	/**
 	 * 用户头像
 	 */
-	avatar string
+	Avatar string `json:"avatar"`
 	/**
 	 * 用户网址
 	 */
-	blog string
+	Blog string `json:"blog"`
 	/**
 	 * 所在公司
 	 */
-	company string
+	Company string `json:"company"`
 	/**
 	 * 位置
 	 */
-	location string
+	Location string `json:"location"`
 	/**
 	 * 用户邮箱
 	 */
-	email string
+	Email string `json:"email"`
 	/**
 	 * 用户备注（各平台中的用户个人介绍）
 	 */
-	remark string
+	Remark string `json:"remark"`
 	/**
 	 * 性别
 	 */
-	gender enum.AuthUserGender
+	Gender enum.AuthUserGender `json:"gender"`
 	/**
 	 * 用户来源
 	 */
-	source string
+	Source string `json:"source"`
 	/**
 	 * 用户授权的token信息
 	 */
-	token AuthToken
+	Token AuthToken `json:"token"`
 	/**
 	 * 第三方平台返回的原始用户信息
 	 */
-	rawUserInfo json.RawMessage
+	RawUserInfo json.RawMessage `json:"raw_user_info"`
 }
 
 // AuthUser builder pattern code
@@ -83,67 +83,67 @@ func NewAuthUserBuilder() *AuthUserBuilder {
 }
 
 func (b *AuthUserBuilder) UUID(uuid string) *AuthUserBuilder {
-	b.authUser.uuid = uuid
+	b.authUser.UUID = uuid
 	return b
 }
 
 func (b *AuthUserBuilder) Username(username string) *AuthUserBuilder {
-	b.authUser.username = username
+	b.authUser.Username = username
 	return b
 }
 
 func (b *AuthUserBuilder) Nickname(nickname string) *AuthUserBuilder {
-	b.authUser.nickname = nickname
+	b.authUser.Nickname = nickname
 	return b
 }
 
 func (b *AuthUserBuilder) Avatar(avatar string) *AuthUserBuilder {
-	b.authUser.avatar = avatar
+	b.authUser.Avatar = avatar
 	return b
 }
 
 func (b *AuthUserBuilder) Blog(blog string) *AuthUserBuilder {
-	b.authUser.blog = blog
+	b.authUser.Blog = blog
 	return b
 }
 
 func (b *AuthUserBuilder) Company(company string) *AuthUserBuilder {
-	b.authUser.company = company
+	b.authUser.Company = company
 	return b
 }
 
 func (b *AuthUserBuilder) Location(location string) *AuthUserBuilder {
-	b.authUser.location = location
+	b.authUser.Location = location
 	return b
 }
 
 func (b *AuthUserBuilder) Email(email string) *AuthUserBuilder {
-	b.authUser.email = email
+	b.authUser.Email = email
 	return b
 }
 
 func (b *AuthUserBuilder) Remark(remark string) *AuthUserBuilder {
-	b.authUser.remark = remark
+	b.authUser.Remark = remark
 	return b
 }
 
 func (b *AuthUserBuilder) Gender(gender enum.AuthUserGender) *AuthUserBuilder {
-	b.authUser.gender = gender
+	b.authUser.Gender = gender
 	return b
 }
 
 func (b *AuthUserBuilder) Source(source string) *AuthUserBuilder {
-	b.authUser.source = source
+	b.authUser.Source = source
 	return b
 }
 
 func (b *AuthUserBuilder) Token(token AuthToken) *AuthUserBuilder {
-	b.authUser.token = token
+	b.authUser.Token = token
 	return b
 }
 
 func (b *AuthUserBuilder) RawUserInfo(rawUserInfo json.RawMessage) *AuthUserBuilder {
-	b.authUser.rawUserInfo = rawUserInfo
+	b.authUser.RawUserInfo = rawUserInfo
 	return b
 }
 
