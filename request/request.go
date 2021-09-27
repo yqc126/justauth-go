@@ -2,6 +2,7 @@ package request
 
 import "github.com/justauth/justauth-go/model"
 
+//AuthRequest
 /**
  * JustAuth {@code Request}公共接口，所有平台的{@code Request}都需要实现该接口
  * <p>
@@ -16,6 +17,7 @@ import "github.com/justauth/justauth-go/model"
  */
 type AuthRequest interface {
 
+	//Authorize
 	/**
 	 * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
 	 *
@@ -24,14 +26,16 @@ type AuthRequest interface {
 	 */
 	Authorize(state string) string
 
+	//Login
 	/**
 	 * 第三方登录
 	 *
 	 * @param authCallback 用于接收回调参数的实体
 	 * @return 返回登录成功后的用户信息
 	 */
-	Login(authCallback model.AuthCallback) (model.AuthResponse, error)
+	Login(authCallback model.AuthCallback) (*model.AuthResponse, error)
 
+	//Revoke
 	/**
 	 * 撤销授权
 	 *
@@ -40,6 +44,7 @@ type AuthRequest interface {
 	 */
 	Revoke(authToken model.AuthToken) (model.AuthResponse, error)
 
+	//Refresh
 	/**
 	 * 刷新access token （续期）
 	 *

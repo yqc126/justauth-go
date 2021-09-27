@@ -61,4 +61,6 @@ type AuthSource interface {
 	 * @return name
 	 */
 	GetName() string
+
+	String() string
 }

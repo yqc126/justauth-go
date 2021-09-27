@@ -70,3 +70,83 @@ type AuthUser struct {
 	 */
 	rawUserInfo json.RawMessage
 }
+
+// AuthUser builder pattern code
+type AuthUserBuilder struct {
+	authUser *AuthUser
+}
+
+func NewAuthUserBuilder() *AuthUserBuilder {
+	authUser := &AuthUser{}
+	b := &AuthUserBuilder{authUser: authUser}
+	return b
+}
+
+func (b *AuthUserBuilder) UUID(uuid string) *AuthUserBuilder {
+	b.authUser.uuid = uuid
+	return b
+}
+
+func (b *AuthUserBuilder) Username(username string) *AuthUserBuilder {
+	b.authUser.username = username
+	return b
+}
+
+func (b *AuthUserBuilder) Nickname(nickname string) *AuthUserBuilder {
+	b.authUser.nickname = nickname
+	return b
+}
+
+func (b *AuthUserBuilder) Avatar(avatar string) *AuthUserBuilder {
+	b.authUser.avatar = avatar
+	return b
+}
+
+func (b *AuthUserBuilder) Blog(blog string) *AuthUserBuilder {
+	b.authUser.blog = blog
+	return b
+}
+
+func (b *AuthUserBuilder) Company(company string) *AuthUserBuilder {
+	b.authUser.company = company
+	return b
+}
+
+func (b *AuthUserBuilder) Location(location string) *AuthUserBuilder {
+	b.authUser.location = location
+	return b
+}
+
+func (b *AuthUserBuilder) Email(email string) *AuthUserBuilder {
+	b.authUser.email = email
+	return b
+}
+
+func (b *AuthUserBuilder) Remark(remark string) *AuthUserBuilder {
+	b.authUser.remark = remark
+	return b
+}
+
+func (b *AuthUserBuilder) Gender(gender enum.AuthUserGender) *AuthUserBuilder {
+	b.authUser.gender = gender
+	return b
+}
+
+func (b *AuthUserBuilder) Source(source string) *AuthUserBuilder {
+	b.authUser.source = source
+	return b
+}
+
+func (b *AuthUserBuilder) Token(token AuthToken) *AuthUserBuilder {
+	b.authUser.token = token
+	return b
+}
+
+func (b *AuthUserBuilder) RawUserInfo(rawUserInfo json.RawMessage) *AuthUserBuilder {
+	b.authUser.rawUserInfo = rawUserInfo
+	return b
+}
+
+func (b *AuthUserBuilder) Build() (*AuthUser, error) {
+	return b.authUser, nil
+}
