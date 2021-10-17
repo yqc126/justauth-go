@@ -48,4 +48,10 @@ var (
 		accessToken: "https://gitee.com/oauth/token",
 		userInfo:    "https://gitee.com/api/v5/user",
 	}
+	GITHUB = DefaultSource{
+		name:        "github",
+		authorize:   "https://github.com/login/oauth/authorize",
+		accessToken: "https://github.com/login/oauth/access_token",
+		userInfo:    "https://api.github.com/user",
+	}
 )

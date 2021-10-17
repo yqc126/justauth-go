@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"github.com/justauth/justauth-go/model"
 )
 
@@ -26,16 +27,32 @@ func NewAuthGiteeRequest() *AuthGiteeRequest {
 }
 
 func (r *AuthGiteeRequest) GetAccessToken(authCallback model.AuthCallback) (*model.AuthToken, error) {
-	token := r.DoPostAuthorizationCode(authCallback.Code)
+	token, err := r.DoPostAuthorizationCode(authCallback.Code)
+	if err != nil {
+		return nil, err
+	}
 
-	b := model.AuthTokenBuilder{}
-	return b.
-		AccessToken(token.AccessToken).
-		RefreshToken(token.RefreshToken).
-		Scope(token.Scope).
-		TokenType(token.TokenType).
-		ExpireIn(token.ExpireIn).
+	respToken := GiteeRespToken{}
+	err = json.Unmarshal([]byte(token), &respToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return model.NewAuthTokenBuilder().
+		AccessToken(respToken.AccessToken).
+		RefreshToken(respToken.RefreshToken).
+		Scope(respToken.Scope).
+		TokenType(respToken.TokenType).
+		ExpireIn(respToken.ExpiresIn).
 		Build()
+}
+
+type GiteeRespToken struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	Scope        string `json:"scope"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
 }
 
 //GetUserInfo

@@ -2,15 +2,21 @@ package request
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/google/uuid"
 	"github.com/justauth/justauth-go/cache"
 	cfg "github.com/justauth/justauth-go/config"
 	"github.com/justauth/justauth-go/enum"
 	e "github.com/justauth/justauth-go/error"
 	"github.com/justauth/justauth-go/model"
 	"github.com/justauth/justauth-go/utils"
+	"html"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
 )
 
 //AuthDefaultRequest
@@ -25,17 +31,22 @@ type AuthDefaultRequest struct {
 	config         cfg.AuthConfig
 	source         cfg.AuthSource
 	authStateCache cache.AuthStateCache
+	getAccessToken AccessTokenFunc
+	getUserInfo    UserInfoFunc
 }
 
-func (r *AuthDefaultRequest) Init(config cfg.AuthConfig, source cfg.AuthSource, authStateCache cache.AuthStateCache) error {
+func (r *AuthDefaultRequest) Init(config cfg.AuthConfig, getAccessToken AccessTokenFunc, source cfg.AuthSource, authStateCache cache.AuthStateCache) error {
 	r.config = config
 	r.source = source
 	r.authStateCache = authStateCache
-	if !AuthChecker.IsSupportedAuth(AuthChecker{}, config, source) {
+	r.getAccessToken = getAccessToken
+
+	checker := AuthChecker{}
+	if !checker.IsSupportedAuth(config, source) {
 		return e.SourceNotSupportedError
 	}
 	// 校验配置合法性
-	err := AuthChecker.CheckConfig(AuthChecker{}, config, source)
+	err := checker.CheckConfig(config, source)
 	if err != nil {
 		return err
 	}
@@ -73,19 +84,16 @@ func (r *AuthDefaultRequest) Refresh(authToken model.AuthToken) (model.AuthRespo
  * @see AuthDefaultRequest#authorize()
  * @see AuthDefaultRequest#authorize(String)
  */
-func (r AuthDefaultRequest) GetAccessToken(authCallback model.AuthCallback) (*model.AuthToken, error) {
-
-	b := model.AuthTokenBuilder{}
-
-	return b.OpenId("openId").
-		ExpireIn(1000).
-		IdToken("idToken").
-		Scope("scope").
-		RefreshToken("refreshToken").
-		AccessToken("accessToken").
-		Code("code").
-		Build()
-}
+//func (r AuthDefaultRequest) GetAccessToken(authCallback model.AuthCallback) (*model.AuthToken, error) {
+//	return model.NewAuthTokenBuilder().OpenId("openId").
+//		ExpireIn(1000).
+//		IdToken("idToken").
+//		Scope("scope").
+//		RefreshToken("refreshToken").
+//		AccessToken("accessToken").
+//		Code("code").
+//		Build()
+//}
 
 //GetUserInfo
 /**
@@ -96,8 +104,7 @@ func (r AuthDefaultRequest) GetAccessToken(authCallback model.AuthCallback) (*mo
  * @see AuthDefaultRequest#getAccessToken(AuthCallback)
  */
 func (r AuthDefaultRequest) GetUserInfo(authToken model.AuthToken) (*model.AuthUser, error) {
-	b := model.AuthUserBuilder{}
-	return b.Username("test").
+	return model.NewAuthUserBuilder().Username("test").
 		Nickname("test").
 		Gender(enum.MALE).
 		Token(authToken).
@@ -114,11 +121,22 @@ func (r AuthDefaultRequest) GetUserInfo(authToken model.AuthToken) (*model.AuthU
  * @return AuthResponse
  */
 func (r AuthDefaultRequest) Login(authCallback model.AuthCallback) (*model.AuthResponse, error) {
-	err := AuthChecker.CheckCode(AuthChecker{}, r.source, authCallback)
+	checker := AuthChecker{}
+	err := checker.CheckCode(r.source, authCallback)
 	if err != nil {
 		return nil, err
 	}
 
+	accessToken, err := r.getAccessToken(authCallback)
+	if err != nil {
+		return nil, err
+	}
+
+	userInfo, err := r.GetUserInfo(*accessToken)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(userInfo)
 	return nil, err
 }
 
@@ -141,8 +159,14 @@ func (r AuthDefaultRequest) ResponseError(err error) model.AuthResponse {
  * @return 返回授权地址
  * @since 1.9.3
  */
-func (r AuthDefaultRequest) Authorize(state string) string {
-	return ""
+func (r AuthDefaultRequest) Authorize(state string) (string, error) {
+	queryParam := url.Values{}
+	queryParam.Add("response_type", "code")
+	queryParam.Add("client_id", r.config.ClientId)
+	queryParam.Add("redirect_uri", r.config.RedirectUri)
+	queryParam.Add("state", r.GetRealState(state))
+
+	return utils.BuildUrl(r.source.Authorize(), queryParam)
 }
 
 //AccessTokenUrl
@@ -208,7 +232,12 @@ func (r AuthDefaultRequest) RevokeUrl(authToken model.AuthToken) string {
  * @return 返回不为null的state
  */
 func (r AuthDefaultRequest) GetRealState(state string) string {
-	return ""
+	if len(state) == 0 {
+		state = uuid.New().String()
+	}
+
+	//TODO 添加缓存
+	return state
 }
 
 //DoPostAuthorizationCode
@@ -218,12 +247,21 @@ func (r AuthDefaultRequest) GetRealState(state string) string {
  * @param code code码
  * @return Response
  */
-func (r AuthDefaultRequest) DoPostAuthorizationCode(code string) model.AuthToken {
-	resp, _ := http.Post(r.AccessTokenUrl(code), "", nil)
-	body, _ := ioutil.ReadAll(resp.Body)
-	token := model.AuthToken{}
-	_ = json.Unmarshal(body, &token)
-	return token
+func (r AuthDefaultRequest) DoPostAuthorizationCode(code string) (string, error) {
+	resp, err := http.Post(r.AccessTokenUrl(code), "application/json", nil)
+	if err != nil {
+		return "", err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.New("status code not 200:" + strconv.Itoa(resp.StatusCode))
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(body), err
 }
 
 //DoGetAuthorizationCode
@@ -285,5 +323,21 @@ func (r AuthDefaultRequest) DoGetRevoke(authToken model.AuthToken) string {
  * @since 1.16.7
  */
 func (r AuthDefaultRequest) GetScopes(separator string, encode bool, defaultScopes []string) string {
-	return ""
+	scopes := r.config.Scopes
+	if len(scopes) == 0 {
+		if len(defaultScopes) == 0 {
+			return ""
+		}
+		scopes = defaultScopes
+	}
+
+	if len(separator) == 0 {
+		// 默认为空格
+		separator = " "
+	}
+	scopeStr := strings.Join(scopes, separator)
+	if encode {
+		scopeStr = html.EscapeString(scopeStr)
+	}
+	return scopeStr
 }

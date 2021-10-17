@@ -2,7 +2,6 @@ package utils
 
 import (
 	"net/url"
-	"strings"
 )
 
 func BuildUrl(baseUrl string, queries url.Values) (string, error) {
@@ -20,6 +19,11 @@ func BuildUrl(baseUrl string, queries url.Values) (string, error) {
 	}
 
 	queryStr := values.Encode()
-	prefix := strings.Join([]string{u.Scheme, u.Host + u.Path}, "://")
-	return prefix + "?" + queryStr, nil
+	queryStr, err = url.QueryUnescape(queryStr)
+	if err != nil {
+		return "", err
+	}
+
+	u.RawQuery = queryStr
+	return u.String(), nil
 }

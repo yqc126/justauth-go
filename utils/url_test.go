@@ -14,7 +14,7 @@ func TestBuildUrl(t *testing.T) {
 	//            .queryParam("grant_type", "authorization_code")
 	//            .queryParam("redirect_uri", config.getRedirectUri())
 	//            .build();
-	baseUrl1 := "https://www.google.com/test/abc"
+	baseUrl1 := "https://www.google.com/test/abc?abc=123"
 	v := url.Values{}
 	v.Add("code", "code")
 	v.Add("code", "code")

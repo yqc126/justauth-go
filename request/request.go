@@ -24,7 +24,7 @@ type AuthRequest interface {
 	 * @param state state 验证授权流程的参数，可以防止csrf
 	 * @return 返回授权地址
 	 */
-	Authorize(state string) string
+	Authorize(state string) (string, error)
 
 	//Login
 	/**
@@ -53,3 +53,6 @@ type AuthRequest interface {
 	 */
 	Refresh(authToken model.AuthToken) (model.AuthResponse, error)
 }
+
+type AccessTokenFunc func(authCallback model.AuthCallback) (*model.AuthToken, error)
+type UserInfoFunc func(authToken model.AuthToken) (*model.AuthUser, error)
