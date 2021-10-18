@@ -11,7 +11,7 @@ var (
 	 * other：调用异常，具体异常内容见{@code msg}
 	 */
 	SUCCESS                = AuthResponseStatus{Code: 2000, Msg: "Success"}
-	FAILURE                = AuthResponseStatus{5000, "Failure"}
+	FAILURE                = AuthResponseStatus{Code: 5000, Msg: "Failure"}
 	NOT_IMPLEMENTED        = AuthResponseStatus{Code: 5001, Msg: "Not Implemented"}
 	PARAMETER_INCOMPLETE   = AuthResponseStatus{Code: 5002, Msg: "Parameter incomplete"}
 	UNSUPPORTED            = AuthResponseStatus{Code: 5003, Msg: "Unsupported operation"}
