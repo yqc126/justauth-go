@@ -64,6 +64,6 @@ type GiteeRespToken struct {
  * @see AuthDefaultRequest#getAccessToken(AuthCallback)
  */
 func (r *AuthGiteeRequest) GetUserInfo(authToken model.AuthToken) (*model.AuthUser, error) {
-	userInfo := r.DoGetUserInfo(authToken)
-	return &userInfo, nil
+	//userInfo := r.DoGetUserInfo(authToken)
+	return model.NewAuthUserBuilder().Build()
 }

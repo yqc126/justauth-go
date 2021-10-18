@@ -1,7 +1,6 @@
 package request
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -31,15 +30,19 @@ type AuthDefaultRequest struct {
 	config         cfg.AuthConfig
 	source         cfg.AuthSource
 	authStateCache cache.AuthStateCache
+	optionFunc     AuthOption
+}
+
+type AuthOption struct {
 	getAccessToken AccessTokenFunc
 	getUserInfo    UserInfoFunc
 }
 
-func (r *AuthDefaultRequest) Init(config cfg.AuthConfig, getAccessToken AccessTokenFunc, source cfg.AuthSource, authStateCache cache.AuthStateCache) error {
+func (r *AuthDefaultRequest) Init(config cfg.AuthConfig, optionFunc AuthOption, source cfg.AuthSource, authStateCache cache.AuthStateCache) error {
 	r.config = config
 	r.source = source
 	r.authStateCache = authStateCache
-	r.getAccessToken = getAccessToken
+	r.optionFunc = optionFunc
 
 	checker := AuthChecker{}
 	if !checker.IsSupportedAuth(config, source) {
@@ -127,12 +130,14 @@ func (r AuthDefaultRequest) Login(authCallback model.AuthCallback) (*model.AuthR
 		return nil, err
 	}
 
-	accessToken, err := r.getAccessToken(authCallback)
+	accessToken, err := r.optionFunc.getAccessToken(authCallback)
 	if err != nil {
 		return nil, err
 	}
 
-	userInfo, err := r.GetUserInfo(*accessToken)
+	fmt.Println(accessToken)
+
+	userInfo, err := r.optionFunc.getUserInfo(*accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -293,12 +298,18 @@ func (r AuthDefaultRequest) DoPostUserInfo(authToken model.AuthToken) string {
  * @param authToken token封装
  * @return Response
  */
-func (r AuthDefaultRequest) DoGetUserInfo(authToken model.AuthToken) model.AuthUser {
-	resp, _ := http.Get(r.UserInfoUrl(authToken))
-	body, _ := ioutil.ReadAll(resp.Body)
-	token := model.AuthUser{}
-	_ = json.Unmarshal(body, &token)
-	return token
+func (r AuthDefaultRequest) DoGetUserInfo(authToken model.AuthToken) (string, error) {
+	resp, err := http.Get(r.UserInfoUrl(authToken))
+	if err != nil {
+		return "", err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(body), nil
 }
 
 //DoGetRevoke
